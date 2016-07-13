@@ -27,3 +27,9 @@
 *.exe
 *.out
 *.app
+
+# Stanford library files
+**/StanfordCPPLib/*
+
+# spl.jar
+**/spl.jar
