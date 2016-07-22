@@ -33,3 +33,6 @@
 
 # spl.jar
 **/spl.jar
+
+# xcodeproj files
+**/*.xcodeproj/**
