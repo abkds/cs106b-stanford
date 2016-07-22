@@ -53,7 +53,7 @@ int main() {
 
 		getline(std::cin, source);
 
-		if (source.size() == 0) {	/* RETURN has been entered */
+		if (source.size() == 0) {	 /* RETURN has been entered */
 			std::cout << "GoodBye !" << std::endl;
 			break;
 		}
@@ -86,7 +86,21 @@ std::vector<std::string> findLadder(std::string source, std::string destination,
 	return ladder;
 }
 
+/*
+ * Funcion: printVector
+ * Usage: printVector(vec, ", ");
+ * ------------------------------
+ * Prints a vector of objects seprated by the separator.
+ *
+ * 		eg v = {1, 2, 3}
+ *      printVector(v, " -> ");
+ *      1 -> 2 -> 3
+ * Doesn't print an endline after printing the vector.
+ */
 template <typename T>
 void printVector(std::vector<T> vec, std::string separator) {
-	return;
+	for (auto it = vec.begin(); it != vec.end(); ++it) {
+		if (it != vec.begin()) std::cout << separator;
+		std::cout << *it;
+	}
 }
