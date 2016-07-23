@@ -15,10 +15,10 @@ LIB = -lStanfordCPPLib
 all: $(PROGRAM)
 
 WordLadder: $(OBJECTS)
-	g++ -o $(PROGRAM) $(LDOPTIONS) $(OBJECTS) $(LIB)
+	g++ -std=c++11 -o $(PROGRAM) $(LDOPTIONS) $(OBJECTS) $(LIB)
 
 WordLadder.o: WordLadder.cpp Makefile libStanfordCPPLib.a
-	g++ -c $(CPPOPTIONS) WordLadder.cpp
+	g++ -std=c++11 -c $(CPPOPTIONS) WordLadder.cpp
 
 libStanfordCPPLib.a:
 	@rm -f libStanfordCPPLib.a
