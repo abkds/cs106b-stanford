@@ -15,10 +15,10 @@ LIB = -lStanfordCPPLib
 all: $(PROGRAM)
 
 RandomSubsets: $(OBJECTS)
-	g++ -o $(PROGRAM) $(LDOPTIONS) $(OBJECTS) $(LIB)
+	g++ -std=c++11 -o $(PROGRAM) $(LDOPTIONS) $(OBJECTS) $(LIB)
 
 RandomSubsets.o: RandomSubsets.cpp Makefile libStanfordCPPLib.a
-	g++ -c $(CPPOPTIONS) RandomSubsets.cpp
+	g++ -std=c++11 -c $(CPPOPTIONS) RandomSubsets.cpp
 
 libStanfordCPPLib.a:
 	@rm -f libStanfordCPPLib.a
