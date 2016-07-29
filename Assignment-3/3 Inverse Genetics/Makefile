@@ -15,10 +15,10 @@ LIB = -lStanfordCPPLib
 all: $(PROGRAM)
 
 InverseGenetics: $(OBJECTS)
-	g++ -o $(PROGRAM) $(LDOPTIONS) $(OBJECTS) $(LIB)
+	g++ -std=c++11 -o $(PROGRAM) $(LDOPTIONS) $(OBJECTS) $(LIB)
 
 InverseGenetics.o: InverseGenetics.cpp Makefile libStanfordCPPLib.a
-	g++ -c $(CPPOPTIONS) InverseGenetics.cpp
+	g++ -std=c++11 -c $(CPPOPTIONS) InverseGenetics.cpp
 
 libStanfordCPPLib.a:
 	@rm -f libStanfordCPPLib.a
