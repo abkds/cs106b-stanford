@@ -15,10 +15,10 @@ LIB = -lStanfordCPPLib
 all: $(PROGRAM)
 
 UniversalHealthCoverage: $(OBJECTS)
-	g++ -o $(PROGRAM) $(LDOPTIONS) $(OBJECTS) $(LIB)
+	g++ -std=c++11 -o $(PROGRAM) $(LDOPTIONS) $(OBJECTS) $(LIB)
 
 UniversalHealthCoverage.o: UniversalHealthCoverage.cpp Makefile libStanfordCPPLib.a
-	g++ -c $(CPPOPTIONS) UniversalHealthCoverage.cpp
+	g++ -std=c++11 -c $(CPPOPTIONS) UniversalHealthCoverage.cpp
 
 libStanfordCPPLib.a:
 	@rm -f libStanfordCPPLib.a
