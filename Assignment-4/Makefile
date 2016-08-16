@@ -2,7 +2,7 @@
 #****************************************************************
 
 PROGRAM = Boggle
-OBJECTS = Boggle.o gboggle.o
+OBJECTS = Boggle.o gboggle.o BoggleGame.o
 
 CPPOPTIONS = -IStanfordCPPLib -fvisibility-inlines-hidden -g
 LDOPTIONS = -L.
@@ -15,13 +15,16 @@ LIB = -lStanfordCPPLib
 all: $(PROGRAM)
 
 Boggle: $(OBJECTS)
-	g++ -o $(PROGRAM) $(LDOPTIONS) $(OBJECTS) $(LIB)
+	g++ -std=c++11 -o $(PROGRAM) $(LDOPTIONS) $(OBJECTS) $(LIB)
 
 Boggle.o: Boggle.cpp Makefile libStanfordCPPLib.a
-	g++ -c $(CPPOPTIONS) Boggle.cpp
+	g++ -std=c++11 -c $(CPPOPTIONS) Boggle.cpp
 
 gboggle.o: gboggle.cpp Makefile libStanfordCPPLib.a
-	g++ -c $(CPPOPTIONS) gboggle.cpp
+	g++ -std=c++11 -c $(CPPOPTIONS) gboggle.cpp
+
+BoggleGame.o: BoggleGame.cpp Makefile libStanfordCPPLib.a
+    g++ -std=c++11 -c $(CPPOPTIONS) Boggle.cpp
 
 libStanfordCPPLib.a:
 	@rm -f libStanfordCPPLib.a
