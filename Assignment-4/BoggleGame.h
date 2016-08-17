@@ -26,8 +26,24 @@ public:
      * with a given set of cubes
      */
     void initBoard();
+
+    /*
+     * Function: printInstructions()
+     * Usage: BoggleGame.printInstructions()
+     * -------------------------------------
+     * Print the welcome message and print the instructions for a game
+     * of Boggle.
+     */
+    void printInstructions();
 private:
     Grid<std::string> boggleGrid;
+
+    /*
+     * Utility functions to show welcome message and print instructions.
+     */
+    void welcome();
+    void giveInstructions();
+    bool askUntilYesOrNo(std::string question);
 
     /* Constants */
     static const string STANDARD_CUBES[16];

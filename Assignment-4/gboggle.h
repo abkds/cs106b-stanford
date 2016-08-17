@@ -13,7 +13,7 @@
 #define _gboggle_h
 
 #include <string>
-#include "gwindow.h"
+#include "StanfordCPPLib/gwindow.h"
 
 /*
  * Type: Player
