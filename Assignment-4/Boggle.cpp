@@ -7,6 +7,7 @@
 
 #include "Boggle.h"
 #include "strlib/strlib.h"
+#include "random/random.h"
 #include <iostream>
 #include <vector>
 #include <iterator>
@@ -119,7 +120,7 @@ void Boggle::loadLexicon() {
  *      +---+---+---+---+---+
  */
 void Boggle::drawBoard() const {
-
+    std::cout << std::endl;
     for (int i = 0; i < board.size(); i++) {
         std::cout << "+---";
     }
@@ -230,7 +231,28 @@ void Boggle::setUserString() {
 }
 
 void Boggle::setComputerGeneratedBoard() {
+    std::vector<std::string> cubes;
+    int size = board.size();
 
+    /* Copy the cubes into a vector string to shuffle */
+    if (board.size() == kRegularBoggleSize) {
+        std::copy(STANDARD_CUBES, STANDARD_CUBES + sizeof(STANDARD_CUBES) / sizeof(STANDARD_CUBES[0]),
+                  std::back_inserter(cubes));
+    }
+
+    if (board.size() == kBigBoggleSize) {
+        std::copy(BIG_BOGGLE_CUBES, BIG_BOGGLE_CUBES + sizeof(BIG_BOGGLE_CUBES) / sizeof(BIG_BOGGLE_CUBES[0]),
+                  std::back_inserter(cubes));
+    }
+
+    randomShuffle(cubes);
+
+    for (int i = 0; i < cubes.size(); i++) {
+        int row = i / size;
+        int col = i % size;
+
+        board[row][col] = cubes[i][randomInteger(0, 5)];
+    }
 }
 
 void Boggle::fillBoard() {
