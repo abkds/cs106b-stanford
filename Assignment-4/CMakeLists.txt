@@ -3,5 +3,5 @@ project(Assignment_4)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 
-set(SOURCE_FILES main.cpp)
-add_executable(Assignment_4 ${SOURCE_FILES})
+set(SOURCE_FILES main.cpp random/random.h random/random.cpp random/private/randompatch.h)
+add_executable(Assignment_4 ${SOURCE_FILES} random/random.cpp random/private/randompatch.h)
