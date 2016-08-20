@@ -10,6 +10,8 @@
 #include <ctime>
 #include "random.h"
 #include "private/randompatch.h"
+#include <vector>
+#include <utility>
 
 /* Private function prototype */
 static void initRandomSeed();
@@ -20,6 +22,7 @@ int randomInteger(int low, int high) {
     double s = d * (double(high) - low + 1);
     return int(floor(low + s));
 }
+
 
 /*
  * Implementation notes: setRandomSeed

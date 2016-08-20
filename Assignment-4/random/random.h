@@ -8,7 +8,7 @@
 
 #ifndef _random_h
 #define _random_h
-
+#include <vector>
 /*
  * Function: randomInteger
  * Usage: int n = randomInteger(low, high);
@@ -18,6 +18,15 @@
  */
 
 int randomInteger(int low, int high);
+
+/*
+ * Function: randomShuffle
+ * Usage: randomShuffle(vec);
+ * --------------------------
+ * Randomly shuffles a vector
+ */
+template <typename T>
+void randomShuffle(std::vector<T>& vec);
 
 /*
  * Function: setRandomSeed
@@ -30,5 +39,19 @@ int randomInteger(int low, int high);
  */
 
 void setRandomSeed(int seed);
+
+/*
+ * Implementation notes: randomShuffle
+ * -----------------------------------
+ * Uses the Fisher-Yates algorithm to randomly shuffle a vector.
+ */
+template <typename T>
+void randomShuffle(std::vector<T>& vec) {
+    int size = vec.size();
+    for (int i = 0; i < size; i++) {
+        int r = randomInteger(i, size-1);
+        std::swap(vec[i], vec[r]);
+    }
+}
 
 #endif
