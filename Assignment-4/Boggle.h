@@ -18,6 +18,10 @@ public:
      */
     Boggle();
 
+    /*
+     * Simulate a single Boggle game between
+     * human and computer.
+     */
     void play();
 
 private:
@@ -27,15 +31,22 @@ private:
     void welcome() const;
     void askBoardSize();
     void setBoardCharacters();
-    void fillBoard();
     void showScore() const;
     void announceResult() const;
     void loadLexicon();
     void setUserString();
     void setComputerGeneratedBoard();
+    void humanTurn();
+    void computerTurn();
+    void showScoreForPlayer(const std::vector<std::string>& words) const;
+    bool isValidWord(std::string word);
+    bool isValidWordHelper(std::string word, int row, int col);
+    bool inBounds(int row, int col) const;
+    void resetUsed();
 
     /* Characters stored in row major order */
     std::vector<std::vector<char> > board;
+    std::vector<std::vector<bool> > used;
 
     /* Words humans recognized */
     std::vector<std::string> wordsByHuman;
@@ -46,12 +57,17 @@ private:
     /* Lexicon */
     std::set<std::string> lexicon;
 
-    /* Boggle cubes to initiate board */
+    /* Constants */
     static const std::string STANDARD_CUBES[16];
     static const std::string BIG_BOGGLE_CUBES[25];
-    static const std::string kClearCommand;
-    static const size_t kRegularBoggleSize;
-    static const size_t kBigBoggleSize;
+    const std::string kClearCommand = "clear";
+    const size_t kRegularBoggleSize = 4;
+    const size_t kBigBoggleSize = 5;
+    const std::vector<std::pair<int, int> > dp = {
+            std::make_pair(-1, -1), std::make_pair(-1, 0), std::make_pair(-1, 1),
+            std::make_pair( 0, -1),                        std::make_pair( 0, 1),
+            std::make_pair( 1, -1), std::make_pair( 1, 0), std::make_pair( 1, 1)
+    };
 };
 
 #endif

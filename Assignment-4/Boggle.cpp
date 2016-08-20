@@ -120,7 +120,7 @@ void Boggle::loadLexicon() {
  *      +---+---+---+---+---+
  */
 void Boggle::drawBoard() const {
-    std::cout << std::endl;
+    system(kClearCommand.c_str());
     for (int i = 0; i < board.size(); i++) {
         std::cout << "+---";
     }
@@ -169,8 +169,15 @@ void Boggle::askBoardSize() {
     }
 
     board.resize(size, std::vector<char>(size));
+    used.resize(size, std::vector<bool>(size));
 }
 
+/*
+ * Private Function: setBoardCharacters
+ * Usage: setBoardCharacters()
+ * ------------------------------------
+ * Configures the board and sets the data member board.
+ */
 void Boggle::setBoardCharacters() {
     std::cout << "I'll give you a chance to set up the board to your specification, \n"
             "which makes it easier to confirm your boggle program is working." << std::endl;
@@ -255,12 +262,174 @@ void Boggle::setComputerGeneratedBoard() {
     }
 }
 
-void Boggle::fillBoard() {
+void Boggle::play() {
+    humanTurn();
+    computerTurn();
+}
+/*
+ * Private Function: humanTurn
+ * Usage: humanTurn()
+ * ---------------------------
+ * Allows human to find words on the board, checks
+ * whether the word entered is correct if correct adds
+ * it to the number of valid words entered by human.
+ */
+void Boggle::humanTurn() {
+
+    std::cout << std::endl << std::endl;
+
+    std::cout << "Ok, take all the time you want and find all the words you can! Signal\n"
+            "that you're finished by entering an empty line." << std::endl;
+
+    std::string word;
+    std::cout << "Enter a word: ";
+    while (getline(std::cin, word)) {
+
+        if (word.size() == 0) break;
+
+        if (isValidWord(word)) {
+            auto it = std::find(wordsByHuman.begin(), wordsByHuman.end(), word);
+            if (it == wordsByHuman.end()) {
+                wordsByHuman.push_back(word);
+                drawBoard();
+                std::cout << "Ok, take all the time you want and find all the words you can! Signal\n"
+                "that you're finished by entering an empty line." << std::endl;
+                showScore();
+            } else {
+                std::cout << "You've already guessed that!" << std::endl;
+            }
+        }
+        std::cout << "Enter a word: ";
+    }
+}
+
+
+void Boggle::computerTurn() {
+
+}
+
+/*
+ * Validates whether the word entered is valid for the
+ * given board, and exists in the lexicon.
+ */
+bool Boggle::isValidWord(std::string word) {
+    resetUsed();
+    if (word.size() < 4) {
+        std::cout << "That word doesn't meet the minimum word length." << std::endl;
+        return false;
+    }
+
+    int size = board.size();
+
+    bool onBoard = false;
+
+    for (int i = 0; i < size; i++) {
+        for (int j = 0; j < size; j++) {
+            if (word[0] == board[i][j]) {
+                if (isValidWordHelper(word, i, j)) {
+                    onBoard = true;
+                    break;
+                }
+            } else {
+                resetUsed();
+            }
+        }
+    }
+
+    if (onBoard) {
+        if (lexicon.find(word) != lexicon.end()) {
+            return true;
+        } else {
+            std::cout << "That's not a word" << std::endl;
+            return false;
+        }
+    } else {
+        std::cout << "You can't make that word!" << std::endl;
+        return false;
+    }
+
+}
+
+void Boggle::resetUsed() {
+    for (auto it = used.begin(); it != used.end(); ++it) {
+        std::fill(it->begin(), it->end(), false);
+    }
+}
+
+/*
+ * Function: isValidWordHelper
+ * Usage: if (isValidWordHelper(word, 0, 1)) ...
+ * ---------------------------------------------
+ * Recursively validates whether a word is valid on a board or not
+ */
+bool Boggle::isValidWordHelper(std::string word, int row, int col) {
+    if (word.size() == 0) return true;
+    if (word[0] != board[row][col]) return false;
+    used[row][col] = true;
+
+    // Go over all the adjacent locations
+    int newRow;
+    int newCol;
+    for (auto it = dp.begin(); it != dp.end(); ++it) {
+        newRow = row + it->first;
+        newCol = col + it->second;
+
+        if (inBounds(newRow, newCol) && !used[newRow][newCol]) {
+            if (isValidWordHelper(word.substr(1), newRow, newCol)) {
+                return true;
+            }
+        }
+    }
+
+    return false;
+}
+
+/*
+ * Private Function: inBounds(int row, int col)
+ * Usage: if (inBounds(row, col)) ...
+ * --------------------------------------------
+ * Checks whether the row, col is within the bounds
+ * of the board
+ */
+bool Boggle::inBounds(int row, int col) const {
+    int size = board.size();
+    return (row >= 0) && (row < size)
+            && (col >= 0) && (col < size);
 
 }
 
 void Boggle::showScore() const {
+    std::cout << std::endl;
 
+    std::cout << "Human\n";
+    showScoreForPlayer(wordsByHuman);
+
+    std::cout << std::endl << std::endl;
+    std::cout << "-----------------------------" << std::endl << std::endl;
+
+    std::cout << "Computer\n";
+    showScoreForPlayer(wordsByComputer);
+
+    std::cout << std::endl << std::endl;
+    std::cout << "-----------------------------" << std::endl << std::endl;
+}
+
+/*
+ * Private Function: showScoreForPlayer
+ * Usage: showScoreForPlayer()
+ * ------------------------------------
+ * Shows score and words for a single player.
+ */
+void Boggle::showScoreForPlayer(const std::vector<std::string>& words) const {
+    std::cout << "Score: " << words.size() << std::endl;
+    std::cout << "Words: ";
+
+    for (int i = 0; i < words.size(); i++) {
+        if (i % 10 == 0) {
+            std::cout << std::endl;
+        }
+        std::cout << words[i] << "  ";
+    }
 }
 
 void Boggle::announceResult() const {
@@ -281,9 +450,3 @@ const std::string Boggle::BIG_BOGGLE_CUBES[25] =  {
         "DHHLOR", "DHLNOR", "EIIITT", "EMOTTT", "ENSSSU",
         "FIPRSY", "GORRVW", "HIPRRY", "NOOTUW", "OOOTTU"
 };
-
-/* Mac OS X clear command */
-const std::string Boggle::kClearCommand = "clear";
-
-const size_t Boggle::kRegularBoggleSize = 4;
-const size_t Boggle::kBigBoggleSize = 5;

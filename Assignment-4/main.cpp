@@ -5,5 +5,9 @@
 
 int main() {
     Boggle boggle;
+    boggle.play();
+
+    //std::string s = "a";
+    //std::cout << s.substr(1) << std::endl;
     return 0;
 }
