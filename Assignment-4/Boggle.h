@@ -32,7 +32,6 @@ private:
     void askBoardSize();
     void setBoardCharacters();
     void showScore() const;
-    void announceResult() const;
     void loadLexicon();
     void setUserString();
     void setComputerGeneratedBoard();
@@ -40,10 +39,11 @@ private:
     void computerTurn();
     void showScoreForPlayer(const std::vector<std::string>& words) const;
     bool isValidWord(std::string word);
-    bool isValidWordHelper(std::string word, int row, int col);
+    bool isWordOnBoard(std::string word, int row, int col);
     bool inBounds(int row, int col) const;
     void resetUsed();
     int calculateScore(const std::vector<std::string>& vec) const;
+    void findWords(std::string& tillNow, int& row, int& col);
 
     /* Characters stored in row major order */
     std::vector<std::vector<char> > board;
@@ -56,7 +56,7 @@ private:
     std::vector<std::string> wordsByComputer;
 
     /* Lexicon */
-    Lexicon lexicon;
+    static Lexicon lexicon;
 
     /* Constants */
     static const std::string STANDARD_CUBES[16];
@@ -69,6 +69,7 @@ private:
             std::make_pair( 0, -1),                        std::make_pair( 0, 1),
             std::make_pair( 1, -1), std::make_pair( 1, 0), std::make_pair( 1, 1)
     };
+    const int kMinWordLength = 4;
 };
 
 #endif

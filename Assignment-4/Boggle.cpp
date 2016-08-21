@@ -16,6 +16,8 @@
 #include <fstream>
 #include <cstdlib>
 
+Lexicon Boggle::lexicon;
+
 /*
  * Constructor: Boggle
  * -------------------
@@ -89,7 +91,7 @@ void Boggle::giveInstructions() const {
  * a set of string.
  */
 void Boggle::loadLexicon() {
-    lexicon.addWordsFromFile("EnglishWords.txt");
+    Boggle::lexicon.addWordsFromFile("EnglishWords.txt");
 }
 
 /*
@@ -221,6 +223,8 @@ void Boggle::setUserString() {
         std::cout << "String must include "<< gridSize << " characters! Try again: ";
     }
 
+    boggleString = toUpperCase(boggleString);
+
     for (int i = 0; i < boggleString.size(); i++) {
         int row = i / size;
         int col = i % size;
@@ -279,7 +283,7 @@ void Boggle::humanTurn() {
 
         if (word.size() == 0) break;
 
-        if (isValidWord(word)) {
+        if (isValidWord(toUpperCase(word))) {
             auto it = std::find(wordsByHuman.begin(), wordsByHuman.end(), word);
             if (it == wordsByHuman.end()) {
                 wordsByHuman.push_back(word);
@@ -297,7 +301,62 @@ void Boggle::humanTurn() {
 
 
 void Boggle::computerTurn() {
+    int size = board.size();
+    for (int i = 0; i < size; i++) {
+        for (int j = 0; j < size; j++) {
+            std::string start;
+            start += board[i][j];
+            resetUsed();
+            used[i][j] = true;
+            findWords(start, i, j);
+        }
+    }
 
+    drawBoard();
+    showScore();
+}
+
+
+/*
+ * Function: findWords
+ * Usage: findWords(start, i, j)
+ * -----------------------------
+ * Exhaustively searches the entire board for all words starting from
+ * row, col. Uses backtracking for the words. Prunes the search if the
+ * word till now is not a valid prefix in the lexicon.
+ *
+ * Note: tillNow is automatically backtracked since it is passed as a
+ * copied variable.
+ */
+void Boggle::findWords(std::string& tillNow, int& row, int& col) {
+
+
+    if (lexicon.contains(tillNow) && tillNow.size() >= kMinWordLength) {
+        if (std::find(wordsByComputer.begin(), wordsByComputer.end(), tillNow) == wordsByComputer.end())
+            wordsByComputer.push_back(tillNow);
+    }
+
+    if (!lexicon.containsPrefix(tillNow)) return;
+
+    for (int i = 0; i < dp.size(); i++) {
+        row += dp[i].first;
+        col += dp[i].second;
+
+        if (inBounds(row, col) && !used[row][col]) {
+            // make move
+            used[row][col] = true;
+            tillNow.push_back(board[row][col]);
+
+            findWords(tillNow, row, col);
+
+            // backtrack
+            tillNow.pop_back();
+            used[row][col] = false;
+        }
+
+        row -= dp[i].first;
+        col -= dp[i].second;
+    }
 }
 
 /*
@@ -319,8 +378,7 @@ bool Boggle::isValidWord(std::string word) {
         for (int j = 0; j < size; j++) {
             if (word[0] == board[i][j]) {
                 used[i][j] = true;
-
-                if (isValidWordHelper(word, i, j)) {
+                if (isWordOnBoard(word, i, j)) {
                     onBoard = true;
                     break;
                 }
@@ -351,12 +409,13 @@ void Boggle::resetUsed() {
 }
 
 /*
- * Function: isValidWordHelper
- * Usage: if (isValidWordHelper(word, 0, 1)) ...
+ * Function: isWordOnBoard
+ * Usage: if (isWordOnBoard(word, 0, 1)) ...
  * ---------------------------------------------
- * Recursively validates whether a word is valid on a board or not
+ * Recursively validates whether a word can be constructed on board
+ * following the rules of Boggle
  */
-bool Boggle::isValidWordHelper(std::string word, int row, int col) {
+bool Boggle::isWordOnBoard(std::string word, int row, int col) {
     if (word.size() == 1 && word[0] == board[row][col]) return true;
     if (word[0] != board[row][col]) return false;
 
@@ -371,7 +430,7 @@ bool Boggle::isValidWordHelper(std::string word, int row, int col) {
             // make new move
             used[newRow][newCol] = true;
 
-            if (isValidWordHelper(word.substr(1), newRow, newCol))
+            if (isWordOnBoard(word.substr(1), newRow, newCol))
                 return true;
 
             // backtrack
@@ -446,12 +505,8 @@ void Boggle::showScoreForPlayer(const std::vector<std::string>& words) const {
         if (i % 10 == 0) {
             std::cout << std::endl;
         }
-        std::cout << words[i] << "  ";
+        std::cout << toLowerCase(words[i]) << "  ";
     }
-}
-
-void Boggle::announceResult() const {
-
 }
 
 const std::string Boggle::STANDARD_CUBES[16] = {
