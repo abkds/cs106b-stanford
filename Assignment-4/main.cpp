@@ -5,7 +5,7 @@
 
 int main() {
     std::string answer;
-    /*while (true) {
+    while (true) {
         Boggle boggle;
         boggle.play();
 
@@ -23,9 +23,6 @@ int main() {
             getline(std::cin, dummy);
             break;
         }
-    }*/
-
-    Lexicon lexicon("EnglishWords.txt");
-    std::cout << lexicon.containsPrefix("rain") << std::endl;
+    }
     return 0;
 }
