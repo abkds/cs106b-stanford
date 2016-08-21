@@ -6,8 +6,8 @@
  */
 
 #include "Boggle.h"
-#include "strlib/strlib.h"
-#include "random/random.h"
+#include "StanfordCPPlib/strlib.h"
+#include "StanfordCPPlib/random.h"
 #include <iostream>
 #include <vector>
 #include <iterator>
@@ -89,15 +89,7 @@ void Boggle::giveInstructions() const {
  * a set of string.
  */
 void Boggle::loadLexicon() {
-    std::ifstream input("EnglishWords.txt");
-
-    if (!input.is_open()) {
-        std::cerr << "Error: Couldn't open the file." << std::endl;
-        exit(1);
-    }
-
-    std::copy(std::istream_iterator<std::string>(input), std::istream_iterator<std::string>(),
-              std::inserter(lexicon, lexicon.begin()));
+    lexicon.addWordsFromFile("EnglishWords.txt");
 }
 
 /*
@@ -326,6 +318,8 @@ bool Boggle::isValidWord(std::string word) {
     for (int i = 0; i < size; i++) {
         for (int j = 0; j < size; j++) {
             if (word[0] == board[i][j]) {
+                used[i][j] = true;
+
                 if (isValidWordHelper(word, i, j)) {
                     onBoard = true;
                     break;
@@ -337,7 +331,7 @@ bool Boggle::isValidWord(std::string word) {
     }
 
     if (onBoard) {
-        if (lexicon.find(word) != lexicon.end()) {
+        if (lexicon.contains(word)) {
             return true;
         } else {
             std::cout << "That's not a word" << std::endl;
@@ -363,25 +357,30 @@ void Boggle::resetUsed() {
  * Recursively validates whether a word is valid on a board or not
  */
 bool Boggle::isValidWordHelper(std::string word, int row, int col) {
-    if (word.size() == 0) return true;
+    if (word.size() == 1 && word[0] == board[row][col]) return true;
     if (word[0] != board[row][col]) return false;
-    used[row][col] = true;
 
-    // Go over all the adjacent locations
     int newRow;
     int newCol;
-    for (auto it = dp.begin(); it != dp.end(); ++it) {
-        newRow = row + it->first;
-        newCol = col + it->second;
+
+    for (int i = 0; i < dp.size(); i++) {
+        newRow = row + dp[i].first;
+        newCol = col + dp[i].second;
 
         if (inBounds(newRow, newCol) && !used[newRow][newCol]) {
-            if (isValidWordHelper(word.substr(1), newRow, newCol)) {
+            // make new move
+            used[newRow][newCol] = true;
+
+            if (isValidWordHelper(word.substr(1), newRow, newCol))
                 return true;
-            }
+
+            // backtrack
+            used[newRow][newCol] = false;
         }
     }
 
     return false;
+
 }
 
 /*
@@ -415,13 +414,32 @@ void Boggle::showScore() const {
 }
 
 /*
+ * Function: calculateScore
+ * Usage: score = calculateScore(words)
+ * ------------------------------------
+ * Given a vector of words calculates the score.
+ * 4-letter: 1 point
+ * 5-letter: 2 points
+ * ...
+ */
+int Boggle::calculateScore(const std::vector<std::string>& vec) const {
+
+    int score = 0;
+    for (std::vector<std::string>::const_iterator it = vec.begin();
+            it != vec.end(); ++it) {
+        score += (it->size() - 3);
+    }
+    return score;
+}
+
+/*
  * Private Function: showScoreForPlayer
  * Usage: showScoreForPlayer()
  * ------------------------------------
  * Shows score and words for a single player.
  */
 void Boggle::showScoreForPlayer(const std::vector<std::string>& words) const {
-    std::cout << "Score: " << words.size() << std::endl;
+    std::cout << "Score: " << calculateScore(words) << std::endl;
     std::cout << "Words: ";
 
     for (int i = 0; i < words.size(); i++) {

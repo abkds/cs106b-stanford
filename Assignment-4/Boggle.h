@@ -6,7 +6,7 @@
 #define _boggle_h
 #include <vector>
 #include <string>
-#include <set>
+#include "StanfordCPPlib/lexicon.h"
 
 class Boggle {
 public:
@@ -43,6 +43,7 @@ private:
     bool isValidWordHelper(std::string word, int row, int col);
     bool inBounds(int row, int col) const;
     void resetUsed();
+    int calculateScore(const std::vector<std::string>& vec) const;
 
     /* Characters stored in row major order */
     std::vector<std::vector<char> > board;
@@ -55,7 +56,7 @@ private:
     std::vector<std::string> wordsByComputer;
 
     /* Lexicon */
-    std::set<std::string> lexicon;
+    Lexicon lexicon;
 
     /* Constants */
     static const std::string STANDARD_CUBES[16];
