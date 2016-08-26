@@ -4,43 +4,50 @@
  * Implementation file for the VectorPriorityQueue
  * class.
  */
- 
+
 #include "pqueue-vector.h"
+#include <vector>
+#include <string>
+#include <algorithm>
 #include "error.h"
 
 VectorPriorityQueue::VectorPriorityQueue() {
-	// TODO: Fill this in!
+	// Do nothing, STL vector is initialized automatically
 }
 
 VectorPriorityQueue::~VectorPriorityQueue() {
-	// TODO: Fill this in!
+	// Do nothing, STL vector is destructed automatically
 }
 
 int VectorPriorityQueue::size() {
-	// TODO: Fill this in!
-	
-	return 0;
+	return priorityQueue.size();
 }
 
 bool VectorPriorityQueue::isEmpty() {
-	// TODO: Fill this in!
-	
-	return true;
+	return priorityQueue.empty();
 }
 
-void VectorPriorityQueue::enqueue(string value) {
-	// TODO: Fill this in!
+void VectorPriorityQueue::enqueue(std::string value) {
+	priorityQueue.push_back(value);
 }
 
-string VectorPriorityQueue::peek() {
-	// TODO: Fill this in!
-	
-	return "";
+std::string VectorPriorityQueue::peek() {
+    if (size() == 0) error("peek: Attempting to peek at an empty queue");
+	std::vector<std::string>::iterator minIt =
+        std::min_element(priorityQueue.begin(), priorityQueue.end());
+
+	return *minIt;
 }
 
-string VectorPriorityQueue::dequeueMin() {
-	// TODO: Fill this in!
-	
-	return "";
-}
+std::string VectorPriorityQueue::dequeueMin() {
+	if (size() == 0) error("dequeueMin: Attempting to dequeue an empty queue");
 
+    std::vector<std::string>::iterator minIt =
+        std::min_element(priorityQueue.begin(), priorityQueue.end());
+
+    std::string value = *minIt;
+
+    priorityQueue.erase(minIt);
+
+	return value;
+}
