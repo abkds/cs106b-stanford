@@ -35,20 +35,15 @@ bool LinkedListPriorityQueue::isEmpty() {
 void LinkedListPriorityQueue::enqueue(string value) {
     Cell * cp = new Cell;
     cp->value = value;
-    if (head == NULL) {
-        cp->link = NULL;
-        head = cp;
-    } else {
-        // pointer to pointer to cell
-        Cell ** cpp = &head;
-        while ((*cpp) != NULL && (*cpp)->value < value) {
-            cpp = &((*cpp)->link);
-        }
-        cp->link = *cpp;
-        *cpp = cp;
+    cp->link = NULL;
+    // pointer to pointer to cell
+    Cell ** cpp = &head;
+    while ((*cpp) != NULL && (*cpp)->value < value) {
+        cpp = &((*cpp)->link);
     }
+    cp->link = *cpp;
+    *cpp = cp;
 
-    cp = head;
     count++;
 }
 
