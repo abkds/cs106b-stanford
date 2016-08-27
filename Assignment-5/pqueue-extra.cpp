@@ -105,7 +105,9 @@ string ExtraPriorityQueue::dequeueMin() {
             newCell->child = cp->child;
             newCell->degree = cp->degree;
             head_ = newCell;
+            oldCp = cp;
             cp = cp->sibling;
+            delete oldCp;
         }
     }
 
