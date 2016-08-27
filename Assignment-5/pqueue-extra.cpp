@@ -15,7 +15,9 @@ ExtraPriorityQueue::ExtraPriorityQueue() {
 }
 
 ExtraPriorityQueue::~ExtraPriorityQueue() {
-    // TODO: Fill this in!
+    while (!isEmpty()) {
+        dequeueMin();
+    }
 }
 
 int ExtraPriorityQueue::size() {
@@ -62,11 +64,59 @@ string ExtraPriorityQueue::peek() {
 }
 
 string ExtraPriorityQueue::dequeueMin() {
-    // TODO: Fill this in!
+    if (isEmpty()) error("dequeueMin: Attempting to dequeue an empty queue");
+    string minKey = peek();
 
-    return "";
+    Cell ** pCp = &head;
+    while ((*pCp)->key != minKey) {
+        pCp = &((*pCp)->sibling);
+    }
+
+    Cell * minNodeHead = *pCp;
+    *pCp = (*pCp)->sibling;
+
+    // head contains the original heap - tree of min node
+    // Min Node head points to tree of minimum node
+
+    // Reverse the sibling pointers of children nodes
+    Cell * head_;
+    if (minNodeHead->degree == 0) {
+        head_ = NULL;
+    } else {
+        Cell * minNodeChild = minNodeHead->child;
+        Cell * cp = minNodeChild;
+
+        head_ = new Cell;
+        head_->parent = NULL;
+        head_->sibling = NULL;
+        head_->key = cp->key;
+        head_->child = cp->child;
+        head_->degree = cp->degree;
+
+        Cell * oldCp = cp;
+        cp = cp->sibling;
+        delete oldCp;
+
+        while (cp != NULL) {
+            Cell * newCell = new Cell;
+            newCell->sibling = head_;
+            newCell->parent = NULL;
+            newCell->key = cp->key;
+            newCell->child = cp->child;
+            newCell->degree = cp->degree;
+            head_ = newCell;
+            cp = cp->sibling;
+        }
+    }
+
+    delete minNodeHead;
+
+    Cell * newHead = binomialHeapUnion(head, head_);
+    head = newHead;
+
+    count--;
+    return minKey;
 }
-
 void ExtraPriorityQueue::binomialLink(Cell * & binomialTreeY, Cell * & binomialTreeZ) {
     binomialTreeY->parent = binomialTreeZ;
     binomialTreeY->sibling = binomialTreeZ->child;
