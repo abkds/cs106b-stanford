@@ -8,6 +8,7 @@
 #define PQueue_DoublyLinkedList_Included
 
 #include <string>
+
 using namespace std;
 
 /* A class representing a priority queue backed by an unsorted,
@@ -15,40 +16,40 @@ using namespace std;
  */
 class DoublyLinkedListPriorityQueue {
 public:
-	/* Constructs a new, empty priority queue backed by a doubly-linked list. */
-	DoublyLinkedListPriorityQueue();
+    /* Constructs a new, empty priority queue backed by a doubly-linked list. */
+    DoublyLinkedListPriorityQueue();
 
-	/* Cleans up all memory allocated by this priority queue. */
-	~DoublyLinkedListPriorityQueue();
+    /* Cleans up all memory allocated by this priority queue. */
+    ~DoublyLinkedListPriorityQueue();
 
-	/* Returns the number of elements in the priority queue. */
-	int size();
+    /* Returns the number of elements in the priority queue. */
+    int size();
 
-	/* Returns whether or not the priority queue is empty. */
-	bool isEmpty();
+    /* Returns whether or not the priority queue is empty. */
+    bool isEmpty();
 
-	/* Enqueues a new string into the priority queue. */
-	void enqueue(string value);
+    /* Enqueues a new string into the priority queue. */
+    void enqueue(string value);
 
-	/* Returns, but does not remove, the lexicographically first string in the
-	 * priority queue.
-	 */
-	string peek();
+    /* Returns, but does not remove, the lexicographically first string in the
+     * priority queue.
+     */
+    string peek();
 
-	/* Returns and removes the lexicographically first string in the
-	 * priority queue.
-	 */
-	string dequeueMin();
+    /* Returns and removes the lexicographically first string in the
+     * priority queue.
+     */
+    string dequeueMin();
 
 private:
-	struct Cell {
-		string value;
-		Cell * next;
-		Cell * prev;
-	};
+    struct Cell {
+        string value;
+        Cell *next;
+        Cell *prev;
+    };
 
-	Cell * head;
-	int count;
+    Cell *head;
+    int count;
 };
 
 #endif

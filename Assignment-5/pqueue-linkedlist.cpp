@@ -8,6 +8,7 @@
 #include "pqueue-linkedlist.h"
 #include "error.h"
 #include <iostream>
+
 using namespace std;
 
 LinkedListPriorityQueue::LinkedListPriorityQueue() {
@@ -16,9 +17,9 @@ LinkedListPriorityQueue::LinkedListPriorityQueue() {
 }
 
 LinkedListPriorityQueue::~LinkedListPriorityQueue() {
-    Cell * cp = head;
+    Cell *cp = head;
     while (cp != NULL) {
-        Cell * oldCp = cp;
+        Cell *oldCp = cp;
         cp = cp->link;
         delete oldCp;
     }
@@ -33,11 +34,11 @@ bool LinkedListPriorityQueue::isEmpty() {
 }
 
 void LinkedListPriorityQueue::enqueue(string value) {
-    Cell * cp = new Cell;
+    Cell *cp = new Cell;
     cp->value = value;
     cp->link = NULL;
     // pointer to pointer to cell
-    Cell ** cpp = &head;
+    Cell **cpp = &head;
     while ((*cpp) != NULL && (*cpp)->value < value) {
         cpp = &((*cpp)->link);
     }
@@ -54,7 +55,7 @@ string LinkedListPriorityQueue::peek() {
 
 string LinkedListPriorityQueue::dequeueMin() {
     if (isEmpty()) error("dequeueMin: Attempting to dequeue at an empty queue");
-    Cell * cp = head;
+    Cell *cp = head;
     head = head->link;
     string value = cp->value;
     delete cp;

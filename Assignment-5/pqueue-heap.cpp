@@ -11,24 +11,24 @@
 
 HeapPriorityQueue::HeapPriorityQueue() {
     capacity = INITIAL_CAPACITY;
-	heap = new string[capacity];
+    heap = new string[capacity];
     count = 0;
 }
 
 HeapPriorityQueue::~HeapPriorityQueue() {
-	delete [] heap;
+    delete[] heap;
 }
 
 int HeapPriorityQueue::size() {
-	return count;
+    return count;
 }
 
 bool HeapPriorityQueue::isEmpty() {
-	return count == 0;
+    return count == 0;
 }
 
 void HeapPriorityQueue::enqueue(string value) {
-	if (count == capacity - 1) {
+    if (count == capacity - 1) {
         expandCapacity();
     }
     heap[++count] = value;
@@ -39,20 +39,20 @@ void HeapPriorityQueue::enqueue(string value) {
  * Top most position contains the smallest element by heap property
  */
 string HeapPriorityQueue::peek() {
-	if (isEmpty()) error("peek: Attempting to peek an empty queue");
-	return heap[1];
+    if (isEmpty()) error("peek: Attempting to peek an empty queue");
+    return heap[1];
 }
 
 string HeapPriorityQueue::dequeueMin() {
-	if (isEmpty()) error("dequeueMin: Attempting to dequeue an empty queue");
+    if (isEmpty()) error("dequeueMin: Attempting to dequeue an empty queue");
     string minValue = peek();
     heap[1] = heap[count--];
     bubbleDown(1);
-	return minValue;
+    return minValue;
 }
 
 void HeapPriorityQueue::expandCapacity() {
-    string * oldHeap = heap;
+    string *oldHeap = heap;
     capacity = 2 * capacity;
     heap = new string[capacity];
 
@@ -60,7 +60,7 @@ void HeapPriorityQueue::expandCapacity() {
         heap[i] = oldHeap[i];
     }
 
-    delete [] oldHeap;
+    delete[] oldHeap;
 }
 
 void HeapPriorityQueue::bubbleUp(int index) {

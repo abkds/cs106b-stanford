@@ -9,30 +9,30 @@
 #include "error.h"
 
 DoublyLinkedListPriorityQueue::DoublyLinkedListPriorityQueue() {
-	head = NULL;
+    head = NULL;
     count = 0;
 }
 
 DoublyLinkedListPriorityQueue::~DoublyLinkedListPriorityQueue() {
-	Cell * cp = head;
+    Cell *cp = head;
 
     while (cp != NULL) {
-        Cell * oldCp = cp;
+        Cell *oldCp = cp;
         cp = cp->next;
         delete oldCp;
     }
 }
 
 int DoublyLinkedListPriorityQueue::size() {
-	return count;
+    return count;
 }
 
 bool DoublyLinkedListPriorityQueue::isEmpty() {
-	return count == 0;
+    return count == 0;
 }
 
 void DoublyLinkedListPriorityQueue::enqueue(string value) {
-	Cell * cp = new Cell;
+    Cell *cp = new Cell;
     cp->value = value;
     cp->prev = NULL;
 
@@ -47,9 +47,9 @@ void DoublyLinkedListPriorityQueue::enqueue(string value) {
 }
 
 string DoublyLinkedListPriorityQueue::peek() {
-	if (count == 0) error("peek: Attempting to peek an empty queue");
+    if (count == 0) error("peek: Attempting to peek an empty queue");
 
-    Cell * cp = head;
+    Cell *cp = head;
     string minValue = head->value;
 
     while (cp != NULL) {
@@ -63,10 +63,10 @@ string DoublyLinkedListPriorityQueue::peek() {
 }
 
 string DoublyLinkedListPriorityQueue::dequeueMin() {
-	if (count == 0) error("dequeueMin: Attempting to dequeue an empty queue");
+    if (count == 0) error("dequeueMin: Attempting to dequeue an empty queue");
     string value = peek();
 
-    Cell * cp = head;
+    Cell *cp = head;
     while (cp->value != value) {
         cp = cp->next;
     }
