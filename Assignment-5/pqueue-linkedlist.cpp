@@ -4,43 +4,65 @@
  * Implementation file for the LinkedListPriorityQueue
  * class.
  */
- 
+
 #include "pqueue-linkedlist.h"
 #include "error.h"
+#include <iostream>
+using namespace std;
 
 LinkedListPriorityQueue::LinkedListPriorityQueue() {
-	// TODO: Fill this in!
+    head = NULL;
+    count = 0;
 }
 
 LinkedListPriorityQueue::~LinkedListPriorityQueue() {
-	// TODO: Fill this in!
+    Cell * cp = head;
+    while (cp != NULL) {
+        Cell * oldCp = cp;
+        cp = cp->link;
+        delete oldCp;
+    }
 }
 
 int LinkedListPriorityQueue::size() {
-	// TODO: Fill this in!
-	
-	return 0;
+    return count;
 }
 
 bool LinkedListPriorityQueue::isEmpty() {
-	// TODO: Fill this in!
-	
-	return true;
+    return count == 0;
 }
 
 void LinkedListPriorityQueue::enqueue(string value) {
-	// TODO: Fill this in!
+    Cell * cp = new Cell;
+    cp->value = value;
+    if (head == NULL) {
+        cp->link = NULL;
+        head = cp;
+    } else {
+        // pointer to pointer to cell
+        Cell ** cpp = &head;
+        while ((*cpp) != NULL && (*cpp)->value < value) {
+            cpp = &((*cpp)->link);
+        }
+        cp->link = *cpp;
+        *cpp = cp;
+    }
+
+    cp = head;
+    count++;
 }
 
 string LinkedListPriorityQueue::peek() {
-	// TODO: Fill this in!
-	
-	return "";
+    if (isEmpty()) error("peek: Attempting to peek at an empty queue");
+    return head->value;
 }
 
 string LinkedListPriorityQueue::dequeueMin() {
-	// TODO: Fill this in!
-	
-	return "";
+    if (isEmpty()) error("dequeueMin: Attempting to dequeue at an empty queue");
+    Cell * cp = head;
+    head = head->link;
+    string value = cp->value;
+    delete cp;
+    count--;
+    return value;
 }
-
