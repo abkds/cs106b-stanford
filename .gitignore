@@ -36,3 +36,6 @@
 
 # xcodeproj files
 **/*.xcodeproj/**
+
+# vagrant files
+**/.vagrant/*
