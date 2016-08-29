@@ -22,9 +22,15 @@
  * the PSEUDO_EOF character.
  */
 Map<ext_char, int> getFrequencyTable(istream& file) {
-	// TODO: Implement this!
-	
-	return Map<ext_char, int>();	
+	Map<ext_char, int> frequencyTable;
+	frequencyTable[PSEUDO_EOF] = 1;
+
+	char c;
+	while (file.get(c)) {
+		frequencyTable[c]++;
+	}
+
+	return frequencyTable;
 }
 
 /* Function: buildEncodingTree
@@ -40,7 +46,7 @@ Map<ext_char, int> getFrequencyTable(istream& file) {
  */
 Node* buildEncodingTree(Map<ext_char, int>& frequencies) {
 	// TODO: Implement this!
-	
+
 	return NULL;
 }
 
@@ -71,7 +77,7 @@ void freeTree(Node* root) {
  *     to it, and the file cursor is at the end of the file.
  *     This means that you should just start writing the bits
  *     without seeking the file anywhere.
- */ 
+ */
 void encodeFile(istream& infile, Node* encodingTree, obstream& outfile) {
 	// TODO: Implement this!
 }
@@ -117,22 +123,22 @@ void writeFileHeader(obstream& outfile, Map<ext_char, int>& frequencies) {
 	 * No information about PSEUDO_EOF is written, since the frequency is
 	 * always 1.
 	 */
-	 
+
 	/* Verify that we have PSEUDO_EOF somewhere in this mapping. */
 	if (!frequencies.containsKey(PSEUDO_EOF)) {
 		error("No PSEUDO_EOF defined.");
 	}
-	
+
 	/* Write how many encodings we're going to have.  Note the space after
 	 * this number to ensure that we can read it back correctly.
 	 */
 	outfile << frequencies.size() - 1 << ' ';
-	
+
 	/* Now, write the letter/frequency pairs. */
 	foreach (ext_char ch in frequencies) {
 		/* Skip PSEUDO_EOF if we see it. */
 		if (ch == PSEUDO_EOF) continue;
-		
+
 		/* Write out the letter and its frequency. */
 		outfile << char(ch) << frequencies[ch] << ' ';
 	}
@@ -158,30 +164,30 @@ Map<ext_char, int> readFileHeader(ibstream& infile) {
 	 * too!
 	 */
 	Map<ext_char, int> result;
-	
+
 	/* Read how many values we're going to read in. */
 	int numValues;
 	infile >> numValues;
-	
+
 	/* Skip trailing whitespace. */
 	infile.get();
-	
+
 	/* Read those values in. */
 	for (int i = 0; i < numValues; i++) {
 		/* Get the character we're going to read. */
 		ext_char ch = infile.get();
-		
+
 		/* Get the frequency. */
 		int frequency;
 		infile >> frequency;
-		
+
 		/* Skip the space character. */
 		infile.get();
-		
+
 		/* Add this to the encoding table. */
 		result[ch] = frequency;
 	}
-	
+
 	/* Add in 1 for PSEUDO_EOF. */
 	result[PSEUDO_EOF] = 1;
 	return result;
@@ -217,4 +223,3 @@ void compress(ibstream& infile, obstream& outfile) {
 void decompress(ibstream& infile, ostream& outfile) {
 	// TODO: Implement this!
 }
-
