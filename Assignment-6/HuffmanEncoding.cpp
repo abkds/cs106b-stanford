@@ -335,7 +335,12 @@ Map<ext_char, int> readFileHeader(ibstream& infile) {
  * primarily be glue code.
  */
 void compress(ibstream& infile, obstream& outfile) {
-	// TODO: Implement this!
+	Map<ext_char, int> frequencies = getFrequencyTable(infile);
+	infile.rewind();
+	writeFileHeader(outfile, frequencies);
+	Node* encodingTree = buildEncodingTree(frequencies);
+	encodeFile(infile, encodingTree, outfile);
+	freeTree(encodingTree);
 }
 
 /* Function: decompress
@@ -351,5 +356,8 @@ void compress(ibstream& infile, obstream& outfile) {
  * primarily be glue code.
  */
 void decompress(ibstream& infile, ostream& outfile) {
-	// TODO: Implement this!
+	Map<ext_char, int> frequencies = readFileHeader(infile);
+	Node* encodingTree = buildEncodingTree(frequencies);
+	decodeFile(infile, encodingTree, outfile);
+	freeTree(encodingTree);
 }
