@@ -13,6 +13,10 @@
 #include "HuffmanTypes.h"
 #include "map.h"
 #include "bstream.h"
+#include <vector>
+#include <string>
+#include <utility>
+using namespace std;
 
 /* Function: getFrequencyTable
  * Usage: Map<ext_char, int> freq = getFrequencyTable(file);
@@ -141,5 +145,40 @@ void compress(ibstream& infile, obstream& outfile);
  * primarily be glue code.
  */
 void decompress(ibstream& infile, ostream& outfile);
+
+/* Function: encodingPattern
+ * Usage: pairs = encodingPattern(character, tree)
+ * -------------------------------------------------
+ * Returns a list of all character pattern pairs that are stored
+ * in the tree.
+ */
+vector<pair<ext_char, string> > encodedPatterns(Node * encodingTree);
+
+/* Function: writeBitPattern
+ * Usage: writeBitPattern(outfile, pattern)
+ * ----------------------------------------
+ * Writes to output bit stream the bits as stored in the pattern
+ * Takes as input a string containing "0" and "1". No error checking
+ * is applied on the string characters provided.
+ */
+void writeBitPattern(obstream & outfile, const string& pattern);
+
+/* Function: getEncodedPatternMap
+ * Usage: map = getEncodedPatternMap(tree)
+ * ---------------------------------------
+ * Generates a map of pattern strings for all the characters stored
+ * as leaves in the encoded tree.
+ */
+Map<ext_char, string> getEncodedPatternMap(Node * root);
+
+/* Function: encodedPatternUtility
+ * Usage: encodedPatternUtility(tree, pairs, pattern)
+ * --------------------------------------------------
+ * Utility function to find all the character pattern pairs,
+ * once it reaches any leaf, recursion stops and stores the pair
+ * in the pairs.
+ */
+void encodedPatternUtility(Node * tree, vector<pair<ext_char, string> >& pairs,
+	string pattern);
 
 #endif

@@ -8,6 +8,10 @@
 
 #include "HuffmanEncoding.h"
 #include "pqueue.h"
+#include <vector>
+#include <string>
+#include <utility>
+using namespace std;
 
 /* Function: getFrequencyTable
  * Usage: Map<ext_char, int> freq = getFrequencyTable(file);
@@ -111,7 +115,79 @@ void freeTree(Node* root) {
  *     without seeking the file anywhere.
  */
 void encodeFile(istream& infile, Node* encodingTree, obstream& outfile) {
-	// TODO: Implement this!
+	Map<ext_char, string> map = getEncodedPatternMap(encodingTree);
+
+	char character;
+	while (infile.get(character)) {
+		writeBitPattern(outfile, map[character]);
+	}
+
+	writeBitPattern(outfile, map[PSEUDO_EOF]);
+}
+
+/* Function: getEncodedPatternMap
+ * Usage: map = getEncodedPatternMap(tree)
+ * ---------------------------------------
+ * Generates a map of pattern strings for all the characters stored
+ * as leaves in the encoded tree.
+ */
+Map<ext_char, string> getEncodedPatternMap(Node * root) {
+	Map<ext_char, string> map;
+
+	vector<pair<ext_char, string> > pairs = encodedPatterns(root);
+
+	for (int i = 0; i < pairs.size(); i++) {
+		map[pairs[i].first] = pairs[i].second;
+	}
+
+	return map;
+}
+
+/* Function: encodingPattern
+ * Usage: pattern = encodingPattern(character, tree)
+ * -------------------------------------------------
+ * Returns the encoded bit pattern for a given bit pattern
+ * stored in the tree.
+ */
+vector<pair<ext_char, string> > encodedPatterns(Node * encodingTree) {
+	string pattern;
+	vector<pair<ext_char, string> > pairs;
+	encodedPatternUtility(encodingTree, pairs, pattern);
+	return pairs;
+}
+
+/* Function: encodedPatternUtility
+ * Usage: encodedPatternUtility(tree, pairs, pattern)
+ * --------------------------------------------------
+ * Utility function to find all the character pattern pairs,
+ * once it reaches any leaf, recursion stops and stores the pair
+ * in the pairs.
+ */
+void encodedPatternUtility(Node * tree, vector<pair<ext_char, string> >& pairs,
+	string pattern) {
+
+	if (tree == NULL) return;
+	if (tree->one == NULL && tree->zero == NULL) {
+		pairs.push_back(make_pair(tree->character, pattern));
+	}
+
+	encodedPatternUtility(tree->one, pairs, pattern + "1" );
+	encodedPatternUtility(tree->zero, pairs, pattern + "0");
+}
+
+/* Function: writeBitPattern
+ * Usage: writeBitPattern(outfile, pattern)
+ * ----------------------------------------
+ * Writes to output bit stream the bits as stored in the pattern
+ * Takes as input a string containing "0" and "1". No error checking
+ * is applied on the string characters provided.
+ */
+void writeBitPattern(obstream& outfile, const string& pattern) {
+	int bit;
+	for (int i = 0; i < pattern.size(); i++) {
+		bit = pattern[i] == '1' ? 1 : 0;
+		outfile.writeBit(bit);
+	}
 }
 
 /* Function: decodeFile
@@ -127,7 +203,29 @@ void encodeFile(istream& infile, Node* encodingTree, obstream& outfile) {
  *   - The output file is open and ready for writing.
  */
 void decodeFile(ibstream& infile, Node* encodingTree, ostream& file) {
-	// TODO: Implement this!
+	Map<ext_char, string> encodedMap = getEncodedPatternMap(encodingTree);
+	Map<string, ext_char> decodeMap;
+
+	/* Inverse mapping of map to decode */
+	foreach (ext_char ch in encodedMap) {
+		decodeMap[encodedMap[ch]] = ch;
+	}
+
+	string pattern;
+	int bit;
+	int i = 0;
+	while (true) {
+		bit = infile.readBit();
+		(bit == 1) ? pattern += "1" : pattern += "0";
+
+		if (decodeMap.containsKey(pattern)) {
+			ext_char ch = decodeMap[pattern];
+			if (ch == PSEUDO_EOF) return;
+			char ch_ = (char) ch;
+			file.put(ch_);
+			pattern = "";
+		}
+	}
 }
 
 /* Function: writeFileHeader
