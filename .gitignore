@@ -39,3 +39,9 @@
 
 # vagrant files
 **/.vagrant/*
+
+# plist files
+**/Info.plist
+
+# idea files
+**/.idea/*
