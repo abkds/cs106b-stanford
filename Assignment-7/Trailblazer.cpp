@@ -30,17 +30,23 @@ Vector<Loc>
 shortestPath(Loc start,
              Loc end,
              Grid<double>& world,
-             double costFn(Loc from, Loc to, Grid<double>& world)) {
+             double costFn(Loc from, Loc to, Grid<double>& world),
+             double heuristic(Loc start, Loc end, Grid<double>& world)) {
 
     Grid<BookKeep> bookKeepGrid(world.numRows(), world.numCols());
 
-	shortestPathUtility(start, end, world, costFn, bookKeepGrid);
+	shortestPathUtility(start, end, world, costFn, heuristic, bookKeepGrid);
 
-    Vector<Loc> path;
+    Vector<Loc> reversePath;
     /* Reconstruct path */
     while (end != NIL) {
-        path.push_back(end);
+        reversePath.push_back(end);
         end = bookKeepGrid[end.row][end.col].parent;
+    }
+
+    Vector<Loc> path;
+    for (int i = reversePath.size() - 1; i >= 0; i--) {
+        path.push_back(reversePath[i]);
     }
 
     return path;
@@ -63,6 +69,7 @@ shortestPathUtility(Loc start,
              Loc end,
              Grid<double>& world,
              double costFn(Loc from, Loc to, Grid<double>& world),
+             double heuristic(Loc start, Loc end, Grid<double>& world),
              Grid<BookKeep>& bookKeepGrid) {
 
     /* Mark all nodes gray */
@@ -76,7 +83,7 @@ shortestPathUtility(Loc start,
 
     /* Mark initial node start as yellow and distance 0 */
     bookKeepGrid[start.row][start.col].color = YELLOW;
-    bookKeepGrid[start.row][start.col].distance = 0;
+    bookKeepGrid[start.row][start.col].distance = heuristic(start, end, world);
 
     /* Enqueue start into priority queue with priority 0 */
     TrailblazerPQueue<Loc> pq;
@@ -105,7 +112,7 @@ shortestPathUtility(Loc start,
                         bookKeepGrid[v.row][v.col].parent = u;
                         pq.enqueue(v,
                             bookKeepGrid[v.row][v.col].distance +
-                            costFn(u, v, world)
+                            costFn(u, v, world) + heuristic(v, end, world)
                         );
                     }
 
@@ -116,7 +123,11 @@ shortestPathUtility(Loc start,
                         bookKeepGrid[v.row][v.col].distance =
                             costFn(u, v, world) + bookKeepGrid[u.row][u.col].distance;
                         bookKeepGrid[v.row][v.col].parent = u;
-                        pq.decreaseKey(v, costFn(u, v, world) + bookKeepGrid[u.row][u.col].distance);
+                        pq.decreaseKey(v,
+                            costFn(u, v, world) +
+                            bookKeepGrid[u.row][u.col].distance +
+                            heuristic(v, end, world)
+                        );
                     }
                 }
             }
