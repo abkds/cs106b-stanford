@@ -7,9 +7,9 @@
 #include "WorldGenerator.h"
 #include "Trailblazer.h"
 #include "TrailblazerConstants.h"
-#include "StanfordCPPLib/vector.h"
-#include "StanfordCPPLib/set.h"
-#include "StanfordCPPLib/random.h"
+#include "vector.h"
+#include "set.h"
+#include "random.h"
 #include <cmath>
 #include <algorithm>
 #include <limits>

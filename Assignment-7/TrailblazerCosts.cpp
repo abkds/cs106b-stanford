@@ -14,7 +14,7 @@ const double kAltitudePenalty = 100;
 
 /* The cost of moving from one location to another in the world is computed as
  *
- *		distance(loc1, loc2) * k * |Delta h|
+ *		distance(loc1, loc2) + k * |Delta h|
  *
  * This means that the cost of moving from one point to another depends on two
  * factors: the change in elevation and the absolute distance between those

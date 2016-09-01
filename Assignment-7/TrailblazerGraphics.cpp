@@ -3,16 +3,16 @@
 #include "WorldGenerator.h"
 #include "TrailblazerCosts.h"
 #include "Trailblazer.h"
-#include "StanfordCPPLib/vector.h"
-#include "StanfordCPPLib/gwindow.h"
-#include "StanfordCPPLib/gobjects.h"
-#include "StanfordCPPLib/gevents.h"
-#include "StanfordCPPLib/ginteractors.h"
-#include "StanfordCPPLib/filelib.h"
-#include "StanfordCPPLib/strlib.h"
-#include "StanfordCPPLib/error.h"
+#include "vector.h"
+#include "gwindow.h"
+#include "gobjects.h"
+#include "ginteractors.h"
+#include "filelib.h"
+#include "strlib.h"
+#include "error.h"
 #include <string>
 #include <iomanip>
+#include "gevents.h"
 #include <iostream>
 #include <limits>
 using namespace std;
@@ -428,7 +428,7 @@ static bool regenerateWorld(Grid<double>& world, WorldType& worldType) {
       newWorld = generateRandomMaze(numRows / 2 + 1, numCols / 2 + 1);
       newType = MAZE_WORLD;
     } catch (const ErrorException& e) {
-      cout << e.getMessage() << endl;
+      cout << e.what() << endl;
       return false;
     }
   } else {
@@ -652,7 +652,7 @@ static void runSearch(State& state) {
 	                                    gEndLocation);
 	  cout << "Path cost: " << pathCost << endl;
 	} catch (const ErrorException& e) {
-	  cout << e.getMessage() << endl;
+	  cout << e.what() << endl;
 	}
 }
 

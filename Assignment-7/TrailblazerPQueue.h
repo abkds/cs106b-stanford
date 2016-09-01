@@ -13,7 +13,7 @@
 #define TrailblazerPQueue_Included
 
 #include <map>     // Use std::multimap type as our backing.
-#include "StanfordCPPLib/error.h"
+#include "error.h"
 
 template <typename ElemType>
 class TrailblazerPQueue {

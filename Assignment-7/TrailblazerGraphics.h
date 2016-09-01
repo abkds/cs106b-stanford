@@ -8,7 +8,7 @@
 #define TrailblazerGraphics_Included
 
 #include "TrailblazerTypes.h"
-#include "StanfordCPPLib/grid.h"
+#include "grid.h"
 
 /* Function: colorCell
  *

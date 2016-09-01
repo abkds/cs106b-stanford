@@ -7,7 +7,7 @@
 #ifndef WorldGenerator_Included
 #define WorldGenerator_Included
 
-#include "StanfordCPPLib/grid.h"
+#include "grid.h"
 
 /* Function: generateRandomTerrain
  *
