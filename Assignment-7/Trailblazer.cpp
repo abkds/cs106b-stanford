@@ -9,6 +9,9 @@
 #include "TrailblazerGraphics.h"
 #include "TrailblazerTypes.h"
 #include "TrailblazerPQueue.h"
+#include "random.h"
+#include "foreach.h"
+#include "UnionFind.h"
 #include <limits>
 using namespace std;
 
@@ -52,10 +55,71 @@ shortestPath(Loc start,
     return path;
 }
 
+/* Implementation notes:
+ * --------------------
+ * Uses Kruskal minimum spanning tree backed by a union find data structure
+ *
+ * Since UnionFind data structure supports nodes from 0 to n-1, nodes
+ * of the grid will mapped on to the union find structure by using a
+ * row major order.
+ */
 Set<Edge> createMaze(int numRows, int numCols) {
-	// TODO: Fill this in!
-	error("createMaze is not implemented yet.");
-    return Set<Edge>();
+    /* Generate the set of all edges in a maze
+     * For a given point there are four cardinal positions, make
+     * an edge for each possible location to each cardinal position
+     * and insert in the set, repetations will be handled by the set
+     * itself.
+     */
+    Set<Edge> edges;
+    for (int i = 0; i < numRows; i++) {
+        for (int j = 0; j < numCols; j++) {
+            /* Double for loop for cardinal positions */
+            Loc locFrom = makeLoc(i, j);
+            Loc locToRight = makeLoc(i, j + 1);
+            Loc locToDown = makeLoc(i + 1, j);
+
+            if( (locToRight.col >= 0) && (locToRight.col < numCols)
+                && (locToRight.row >= 0) && (locToRight.row < numRows) ) {
+                edges.add(makeEdge(locFrom, locToRight));
+            }
+
+            if( (locToDown.col >= 0) && (locToDown.col < numCols)
+                && (locToDown.row >= 0) && (locToDown.row < numRows) ) {
+                edges.add(makeEdge(locFrom, locToDown));
+            }
+
+        }
+    }
+
+    /* Stores the minimum spanning tree found by Kruskal algorithm */
+    Set<Edge> spanningTree;
+
+    /* Create union find of rows * cols nodes */
+    UnionFind nodes(numRows * numCols);
+
+    /* Push all the edges into a priority queue with random priorities */
+    TrailblazerPQueue<Edge> pq;
+    foreach (Edge edge in edges) {
+        pq.enqueue(edge, randomInteger(0, 10));
+    }
+
+    /* to hold edge dequeued from priority queue */
+    Edge edge;
+
+    /* Loop till all components join */
+    while (nodes.components() > 1) {
+        edge = pq.dequeueMin();
+        int startIndex = edge.start.row * numRows + edge.start.col;
+        int endIndex = edge.end.row * numRows + edge.end.col;
+
+        if (!nodes.connected(startIndex, endIndex)) {
+            nodes.connect(startIndex, endIndex);
+            spanningTree.add(edge);
+        }
+
+    }
+
+    return spanningTree;
 }
 
 /* Implementation notes:
