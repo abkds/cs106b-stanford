@@ -2,8 +2,8 @@
 #****************************************************************
 
 PROGRAM = Trailblazer
-OBJECTS = Trailblazer.o WorldGenerator.o TrailblazerGraphics.o TrailblazerTypes.cpp TrailblazerCosts.o
-HEADERS = TrailblazerPQueue.h WorldGenerator.h Trailblazer.h TrailblazerGraphics.h TrailblazerTypes.h TrailblazerCosts.h TrailblazerConstants.h
+OBJECTS = Trailblazer.o WorldGenerator.o TrailblazerGraphics.o TrailblazerTypes.cpp TrailblazerCosts.o UnionFind.o
+HEADERS = TrailblazerPQueue.h WorldGenerator.h Trailblazer.h TrailblazerGraphics.h TrailblazerTypes.h TrailblazerCosts.h TrailblazerConstants.h UnionFind.h
 
 CPPOPTIONS = -IStanfordCPPLib -fvisibility-inlines-hidden -g
 LDOPTIONS = -L.
@@ -29,9 +29,12 @@ WorldGenerator.o: WorldGenerator.cpp $(HEADERS) Makefile libStanfordCPPLib.a
 
 TrailblazerTypes.o: TrailblazerTypes.cpp $(HEADERS) Makefile libStanfordCPPLib.a
 	g++ -c $(CPPOPTIONS) TrailblazerTypes.cpp
-	
+
 TrailblazerCosts.o: TrailblazerCosts.cpp $(HEADERS) Makefile libStanfordCPPLib.a
-	g++ -c $(CPPOPTIONS) TrailblazerCosts.cpp	
+	g++ -c $(CPPOPTIONS) TrailblazerCosts.cpp
+
+UnionFind.o: UnionFind.cpp $(HEADERS) Makefile libStanfordCPPLib.a
+	g++ -c $(CPPOPTIONS) UnionFind.cpp
 
 libStanfordCPPLib.a:
 	@rm -f libStanfordCPPLib.a
