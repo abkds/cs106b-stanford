@@ -49,7 +49,7 @@ private:
      * make the new root when doing union operation on two components.
      */
     int *sz;
-    mutable int *id;
+    int *id;
 
     /* Number of components */
     int count;

@@ -8,9 +8,9 @@
 #include "UnionFind.h"
 
 UnionFind::UnionFind(int n) {
-    int *id = new int[n];
-    int *sz = new int[n];
-    int count = n;
+    id = new int[n];
+    sz = new int[n];
+    count = n;
 
     /* Each node is it's own component. The size of each component is 1 */
     for (int i = 0; i < n; i++) {
@@ -31,6 +31,7 @@ UnionFind::~UnionFind() {
  */
 int UnionFind::find(int p) const {
     while (p != id[p]) {
+        id[p] = id[id[p]];
         p = id[p];
     }
     return p;
@@ -56,14 +57,15 @@ bool UnionFind::connected(int p, int q) const {
  * height, always the smaller tree is made a child of the larger tree.
  */
 void UnionFind::connect(int p, int q) {
-    if (!connected(p, q)) {
-        if (sz[p] < sz[q]) {
-            id[p] = q;
-            sz[q] += sz[p];
-        } else {
-            id[q] = p;
-            sz[p] += sz[q];
-        }
-        count--;
+    int i = find(p);
+    int j = find(q);
+    if (i == j) return;
+    if (sz[i] < sz[j]) {
+        id[i] = j;
+        sz[i] += sz[j];
+    } else {
+        id[j] = i;
+        sz[i] += sz[j];
     }
+    count--;
 }
